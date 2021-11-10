@@ -3,8 +3,8 @@ import random
 from math import *
 import sys
 from pygame.locals import *
-TAUX_MUTATION_GLOBAL = 1 #pourcentage
-NB_LAPIN = 6
+TAUX_MUTATION_GLOBAL = 0.2 #pourcentage
+NB_LAPIN = 10
 TAUX_VAINQUEURS = 0.5
 pygame.init()
 jump_sound = pygame.mixer.Sound("jump.wav")
@@ -44,7 +44,7 @@ class Bunny:
     sprites_dead_d.append(pygame.image.load('sprites/bunny/dead_d/frame_6.png'))
     sprites_dead_d.append(pygame.image.load('sprites/bunny/dead_d/frame_7.png'))
 
-    def __init__(self,parent1=None,parent2=None,desired_y = None):
+    def __init__(self,parent1=None,parent2=None,desired_y = None,copied_bunny = None):
         self.__class__.instances.append(self)
         #traits :
         if parent1 == None:
@@ -75,6 +75,12 @@ class Bunny:
             self.y = desired_y
         else:
             self.y = random.randint(50,550)
+        
+        if copied_bunny != None:
+            self.speed = copied_bunny.speed
+            self.wander_dist_coef = copied_bunny.wander_dist_coef
+            self.wander_proba = copied_bunny.wander_proba
+
         self.new_x=self.x
         self.new_y =self.y
         self.wander_dist = 200*self.wander_dist_coef
@@ -98,7 +104,7 @@ class Bunny:
             self.current_dir = "droite"
 
     def waypoint(self):
-        print("new waypoint")
+        #("new waypoint")
         self.jump_animation = True
         self.new_x_et_y()
         while self.new_x <= 0 or self.new_y >= 600 or self.new_y <= 0:
@@ -155,4 +161,4 @@ class Bunny:
         textsurface = font.render(txt_a_afficher, False, (0, 0, 0))
         screen.blit(self.image, (self.x-self.__class__.width/2,self.y-self.__class__.height/2))
         screen.blit(textsurface,(self.x-self.__class__.width/8,self.y+self.__class__.height/2))
-        print(self.x,self.y)
+        #print(self.x,self.y)

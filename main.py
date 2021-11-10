@@ -7,11 +7,12 @@ import bunny_class
 importlib.reload(bunny_class)
 from bunny_class import *
 import numpy as np
-
+import matplotlib.pyplot as plt
 BLUE = [0,0,255]
 
 
 def generate_x_bunnies(nb_bun):
+    Bunny.instances = []
     L_des_Y = np.linspace(1,450,nb_bun)
     for i in range(nb_bun):
         if i ==0:
@@ -25,8 +26,6 @@ def generate_x_bunnies(nb_bun):
 
 def generation():
 
-    Bunny.instances = []
-    generate_x_bunnies(NB_LAPIN)
     bunnies_order = []
     time_elapsed = 0
     sim_finished = False
@@ -52,14 +51,13 @@ def generation():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.MOUSEBUTTONUP:
-                for bunny in Bunny.instances:
-                    del bunny
-                Bunny.instances = []
-                generate_x_bunnies(NB_LAPIN)
-                bunnies_order = []
-                time_elapsed = 0
-                sim_finished = False
+            # if event.type == pygame.MOUSEBUTTONUP:
+            #     for bunny in Bunny.instances:
+            #         del bunny
+            #     generate_x_bunnies(NB_LAPIN)
+            #     bunnies_order = []
+            #     time_elapsed = 0
+            #     sim_finished = False
     
     # Update.
         if len(bunnies_order)>=TAUX_VAINQUEURS*NB_LAPIN and sim_finished == False:
@@ -85,16 +83,91 @@ def generation():
             
             else:
                 bunny.update(dt)
-                bunny.draw_bunny(screen,font)    
+                bunny.draw_bunny(screen,font)
+
+        if sim_finished == True:      
+            for bunny in Bunny.instances: 
+                if bunny.current_sprite >= len(bunny.__class__.sprites_dead_d)-1:
+                        pygame.quit()
+                        return bunnies_order
 
 
         pygame.display.flip()
         dt = fpsClock.tick(fps)/1000
         time_elapsed += dt
-    pygame.quit()
-    return bunnies_order
 
 
 
-generation()
+
+
+
+
+
+
+def create_new_bunny_generation(best_from_last):
+    Bunny.instances = []
+    Bunny(copied_bunny=best_from_last[0][0])
+    while len(Bunny.instances)< NB_LAPIN:
+        i = random.randint(0,len(best_from_last)-1)
+        j = random.randint(0,len(best_from_last)-1)
+        Bunny(best_from_last[i][0],best_from_last[j][0])
+        
+    reasign_y_pos()
+
+def reasign_y_pos():
+    L_des_Y = np.linspace(1,450,NB_LAPIN)
+    
+    for i in range(len(Bunny.instances)):
+        Bunny.instances[i].y = L_des_Y[i]
+
+
+def do_x_generation(nb_gene):
+    L_time = []
+    L_mean_speed = []
+    L_mean_wander_dist = []
+    L_mean_wander_prob = []
+
+    generate_x_bunnies(NB_LAPIN)
+    
+    for gene_i in range(nb_gene):
+        best_from_gene = generation()
+        create_new_bunny_generation(best_from_gene)
+
+        
+        m1=0
+        m2=0
+        m3=0
+        for bunny in Bunny.instances:
+            m1 += bunny.speed
+            m2 += bunny.wander_dist_coef
+            m3 += bunny.wander_proba
+
+        L_time.append(best_from_gene[0][1])
+        L_mean_speed.append(m1/NB_LAPIN)
+        L_mean_wander_dist.append(m2/NB_LAPIN)
+        L_mean_wander_prob.append(m3/NB_LAPIN)
+
+    plt.scatter(list(range(nb_gene)),L_time)
+    plt.plot(list(range(nb_gene)),L_time)
+    plt.title("best time")
+    plt.show()
+
+    plt.scatter(list(range(nb_gene)),L_mean_speed)
+    plt.plot(list(range(nb_gene)),L_mean_speed)
+    plt.title("L_mean_speed")
+    plt.show()
+
+    plt.scatter(list(range(nb_gene)),L_mean_wander_dist)
+    plt.plot(list(range(nb_gene)),L_mean_wander_dist)
+    plt.title("L_mean_wander_dist")
+    plt.show()
+
+    plt.scatter(list(range(nb_gene)),L_mean_wander_prob)
+    plt.plot(list(range(nb_gene)),L_mean_wander_prob)
+    plt.title("L_mean_wander_prob")
+    plt.show()
+
+
+# %%
+
 # %%
