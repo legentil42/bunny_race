@@ -7,10 +7,12 @@ from pygame.locals import *
 from cross_and_cage_class import Cross
 pygame.init()
 go_sound = pygame.mixer.Sound("go.wav")
-SKEW = 2
+wrong_sound = pygame.mixer.Sound("wrong.wav")
+SKEW = 5
 ALTITUDE = 200
-RANDOM_COUNTER_MAX = 400
+RANDOM_COUNTER_MAX = 40000000
 HELI_SPEDD = 200
+NB_CAGES = 10
 class Heli:
     width,height = 100,100
     instances = []
@@ -34,6 +36,7 @@ class Heli:
 
         self.x = 300
         self.y = 200
+        self.N_cages = NB_CAGES
         self.speed = HELI_SPEDD
         self.new_x=self.x
         self.new_y =self.y
@@ -53,11 +56,13 @@ class Heli:
 
     def waypoint(self):
         #("new waypoint") ajouter marqueur
+
         self.moving = True
         self.new_x,self.new_y = pygame.mouse.get_pos()
         self.new_y -= ALTITUDE - self.__class__.height/3
         self.random_counter = RANDOM_COUNTER_MAX
         pygame.mixer.Sound.play(go_sound)
+        
 
 
         if len(Cross.instances)>0:
@@ -65,7 +70,7 @@ class Heli:
                 self.y_goal = Cross.instances[0].y - ALTITUDE
         
 
-    def update(self,dt):
+    def update(self,dt,time_elapsed):
         if self.dead == False: 
 
             if self.moving == True: # tout le temps sinon?
@@ -79,15 +84,17 @@ class Heli:
 
                 if sqrt((self.x-self.x_goal)**2 + (self.y-self.y_goal)**2)>5:
                     if self.random_counter > 0:
-                        x_random = random.randint(-SKEW,SKEW)
-                        y_random = random.randint(-SKEW,SKEW)
-                        self.random_counter -= abs(x_random)+abs(y_random)
-                    else :
-                        x_random = 0
-                        y_random = 0
 
-                    x_parcouru = cos(self.angle)*self.speed*dt + x_random
-                    y_parcouru = sin(self.angle)*self.speed*dt + y_random
+                        self.x_random = 0#SKEW * cos(self.angle+(pi/2)) * cos(time_elapsed/20) 
+                        self.y_random = 0#SKEW * sin(self.angle+(pi/2)) * cos(time_elapsed/20) 
+                        print(self.x_random)
+                        self.random_counter -= abs(self.x_random)+abs(self.y_random)
+                    else :
+                        self.x_random = 0
+                        self.y_random = 0
+
+                    x_parcouru = cos(self.angle)*self.speed*dt + self.x_random
+                    y_parcouru = sin(self.angle)*self.speed*dt + self.y_random
                     self.x = self.x +  x_parcouru
                     self.y = self.y + y_parcouru
                     
