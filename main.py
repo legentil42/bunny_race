@@ -1,11 +1,19 @@
 #%%
 
 from bunny_class import *
+from heli_class import *
+from cross_and_cage_class import *
 
 import importlib
 import bunny_class
+import heli_class
+import cross_and_cage_class
 importlib.reload(bunny_class)
+importlib.reload(heli_class)
+importlib.reload(cross_and_cage_class)
 from bunny_class import *
+from heli_class import *
+from cross_and_cage_class import *
 import numpy as np
 import matplotlib.pyplot as plt
 BLUE = [0,0,255]
@@ -21,10 +29,31 @@ def generate_x_bunnies(nb_bun):
             Bunny(P1,P1,desired_y=L_des_Y[nb_bun-i-1])
 
 
+def find_first_cross(player):
+    one_cross_exist = False
+    for cross in Cross.instances:
+        if cross.exist == True:
+            player.moving = True
+            one_cross_exist = True
+            player.x_goal = Cross.instances[Cross.instances.index(cross)].x
+            player.y_goal = Cross.instances[Cross.instances.index(cross)].y - ALTITUDE
+            break
+    if one_cross_exist == False:
+        player.moving = False
 
 
 
-def generation():
+def main_loop():
+    # for instance in Cross.instances:
+    #     del instance
+    
+    Cross.instances = []
+
+    generate_x_bunnies(NB_LAPIN)
+
+    Heli.instances = []
+
+    player = Heli()
 
     bunnies_order = []
     time_elapsed = 0
@@ -41,7 +70,7 @@ def generation():
 
     pygame.init()
     pygame.font.init()
-    font = pygame.font.SysFont('Comic Sans MS', 30)
+    font = pygame.font.SysFont('Comic Sans MS', int(Bunny.height/7))
 
     # Game loop
     while len(bunnies_order)<NB_LAPIN:
@@ -51,14 +80,20 @@ def generation():
             if event.type == QUIT:
                 pygame.quit()
                 sys.exit()
-            # if event.type == pygame.MOUSEBUTTONUP:
-            #     for bunny in Bunny.instances:
-            #         del bunny
-            #     generate_x_bunnies(NB_LAPIN)
-            #     bunnies_order = []
-            #     time_elapsed = 0
-            #     sim_finished = False
-    
+            if event.type == pygame.MOUSEBUTTONDOWN:  #CLIC GAUCHE
+                mouse_presses = pygame.mouse.get_pressed()
+                if mouse_presses[0]:
+                    print("Left Mouse key was clicked")
+
+                    player.waypoint()
+                    Cross(player.new_x,player.new_y+ALTITUDE)
+
+
+
+
+        find_first_cross(player)
+        print(player.x_goal,player.y_goal,len(Cross.instances),player.moving)
+
     # Update.
         if len(bunnies_order)>=TAUX_VAINQUEURS*NB_LAPIN and sim_finished == False:
             sim_finished = True
@@ -69,6 +104,13 @@ def generation():
                 
     # Draw.
         screen.blit(img_fond, (0,0))
+        player.draw_ombre(screen)
+
+        for cross in Cross.instances:
+            cross.check_if_remove(player)
+            cross.draw_cross(screen)
+
+
         for bunny in Bunny.instances:
             if sim_finished == False:
 
@@ -84,7 +126,8 @@ def generation():
             else:
                 bunny.update(dt)
                 bunny.draw_bunny(screen,font)
-
+        player.update(dt)
+        player.draw_heli(screen,font)
         if sim_finished == True:      
             for bunny in Bunny.instances: 
                 if bunny.current_sprite >= len(bunny.__class__.sprites_dead_d)-1:
@@ -97,76 +140,11 @@ def generation():
         time_elapsed += dt
 
 
+  
 
 
 
-
-
-
-
-def create_new_bunny_generation(best_from_last):
-    Bunny.instances = []
-    Bunny(copied_bunny=best_from_last[0][0])
-    while len(Bunny.instances)< NB_LAPIN:
-        i = random.randint(0,len(best_from_last)-1)
-        j = random.randint(0,len(best_from_last)-1)
-        Bunny(best_from_last[i][0],best_from_last[j][0])
-        
-    reasign_y_pos()
-
-def reasign_y_pos():
-    L_des_Y = np.linspace(1,450,NB_LAPIN)
-    
-    for i in range(len(Bunny.instances)):
-        Bunny.instances[i].y = L_des_Y[i]
-
-
-def do_x_generation(nb_gene):
-    L_time = []
-    L_mean_speed = []
-    L_mean_wander_dist = []
-    L_mean_wander_prob = []
-
-    generate_x_bunnies(NB_LAPIN)
-    
-    for gene_i in range(nb_gene):
-        best_from_gene = generation()
-        create_new_bunny_generation(best_from_gene)
-
-        
-        m1=0
-        m2=0
-        m3=0
-        for bunny in Bunny.instances:
-            m1 += bunny.speed
-            m2 += bunny.wander_dist_coef
-            m3 += bunny.wander_proba
-
-        L_time.append(best_from_gene[0][1])
-        L_mean_speed.append(m1/NB_LAPIN)
-        L_mean_wander_dist.append(m2/NB_LAPIN)
-        L_mean_wander_prob.append(m3/NB_LAPIN)
-
-    plt.scatter(list(range(nb_gene)),L_time)
-    plt.plot(list(range(nb_gene)),L_time)
-    plt.title("best time")
-    plt.show()
-
-    plt.scatter(list(range(nb_gene)),L_mean_speed)
-    plt.plot(list(range(nb_gene)),L_mean_speed)
-    plt.title("L_mean_speed")
-    plt.show()
-
-    plt.scatter(list(range(nb_gene)),L_mean_wander_dist)
-    plt.plot(list(range(nb_gene)),L_mean_wander_dist)
-    plt.title("L_mean_wander_dist")
-    plt.show()
-
-    plt.scatter(list(range(nb_gene)),L_mean_wander_prob)
-    plt.plot(list(range(nb_gene)),L_mean_wander_prob)
-    plt.title("L_mean_wander_prob")
-    plt.show()
-
+# %%
 
 # %%
 

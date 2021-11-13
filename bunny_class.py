@@ -11,7 +11,7 @@ jump_sound = pygame.mixer.Sound("jump.wav")
 finish_sound = pygame.mixer.Sound("finish.wav")
 death_sound = pygame.mixer.Sound("death.wav")
 class Bunny:
-    width,height = 200,200
+    width,height = 100,100
     instances = []
     sprites_g = []
     jump_animation_speed = 0.5
@@ -44,6 +44,10 @@ class Bunny:
     sprites_dead_d.append(pygame.image.load('sprites/bunny/dead_d/frame_6.png'))
     sprites_dead_d.append(pygame.image.load('sprites/bunny/dead_d/frame_7.png'))
 
+
+    for liste in [sprites_d,sprites_dead_d,sprites_g]:
+        for image in liste:
+            liste[liste.index(image)] = pygame.transform.scale(image, (width, height))
     def __init__(self,parent1=None,parent2=None,desired_y = None,copied_bunny = None):
         self.__class__.instances.append(self)
         #traits :
@@ -94,7 +98,7 @@ class Bunny:
         self.dead = False
 
     def new_x_et_y(self):
-        self.new_angle =0# 2*pi*random.random()
+        self.new_angle = 2*pi*random.random()
         self.new_dist = self.wander_dist*random.random()
         self.new_x = cos(self.new_angle)*self.new_dist+self.x
         self.new_y = sin(self.new_angle)*self.new_dist+self.y
@@ -156,9 +160,9 @@ class Bunny:
             
 
     def draw_bunny(self,screen,font):
-        txt_a_afficher = str(round(self.speed,1))+","+ str(round(self.wander_dist_coef,2))+","+str(round(self.wander_proba,2))
+        # txt_a_afficher = str(round(self.speed,1))+","+ str(round(self.wander_dist_coef,2))+","+str(round(self.wander_proba,2))
             
-        textsurface = font.render(txt_a_afficher, False, (0, 0, 0))
+        # textsurface = font.render(txt_a_afficher, False, (0, 0, 0))
         screen.blit(self.image, (self.x-self.__class__.width/2,self.y-self.__class__.height/2))
-        screen.blit(textsurface,(self.x-self.__class__.width/8,self.y+self.__class__.height/2))
+        # screen.blit(textsurface,(self.x-self.__class__.width/8,self.y+self.__class__.height/2))
         #print(self.x,self.y)
