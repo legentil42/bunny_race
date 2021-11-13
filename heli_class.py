@@ -43,7 +43,7 @@ class Heli:
         self.x_goal=self.x
         self.y_goal =self.y
         self.current_sprite = 0
-        self.current_dir = "droite"
+        self.current_dir = "gauche"
         self.image = self.__class__.sprites_d[self.current_sprite]
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
@@ -87,7 +87,7 @@ class Heli:
 
                         self.x_random = 0#SKEW * cos(self.angle+(pi/2)) * cos(time_elapsed/20) 
                         self.y_random = 0#SKEW * sin(self.angle+(pi/2)) * cos(time_elapsed/20) 
-                        print(self.x_random)
+                        
                         self.random_counter -= abs(self.x_random)+abs(self.y_random)
                     else :
                         self.x_random = 0
@@ -99,19 +99,19 @@ class Heli:
                     self.y = self.y + y_parcouru
                     
                 else:
-                    print("cross ateinte")
+                    pass
 
                 
-                if self.current_dir == "droite":
-                    self.current_sprite += self.__class__.hover_animation_speed
-                    if self.current_sprite >= len(self.__class__.sprites_d):
-                        self.current_sprite = 0
-                    self.image = self.__class__.sprites_d[int(self.current_sprite)]
-                elif self.current_dir == "gauche":
-                    self.current_sprite += self.__class__.hover_animation_speed
-                    if self.current_sprite >= len(self.__class__.sprites_g):
-                        self.current_sprite = 0
-                    self.image = self.__class__.sprites_g[int(self.current_sprite)]
+            if self.current_dir == "droite":
+                self.current_sprite += self.__class__.hover_animation_speed
+                if self.current_sprite >= len(self.__class__.sprites_d):
+                    self.current_sprite = 0
+                self.image = self.__class__.sprites_d[int(self.current_sprite)]
+            elif self.current_dir == "gauche":
+                self.current_sprite += self.__class__.hover_animation_speed
+                if self.current_sprite >= len(self.__class__.sprites_g):
+                    self.current_sprite = 0
+                self.image = self.__class__.sprites_g[int(self.current_sprite)]
         
         if self.dead == True:
             pass #A FAIRE
@@ -122,9 +122,5 @@ class Heli:
 
 
     def draw_heli(self,screen,font):
-        # txt_a_afficher = str(round(self.speed,1))+","+ str(round(self.wander_dist_coef,2))+","+str(round(self.wander_proba,2))
-            
-        # textsurface = font.render(txt_a_afficher, False, (0, 0, 0))
         screen.blit(self.image, (self.x-self.__class__.width/2,self.y-self.__class__.height/2))
-       # screen.blit(textsurface,(self.x-self.__class__.width/8,self.y+self.__class__.height/2))
-        #print(self.x,self.y)
+

@@ -24,21 +24,23 @@ class Cross:
             self.__class__.instances.append(self)
 
     def draw_cross(self,screen):
-        print(self.exist)
+        
         if self.exist == True:
             screen.blit(self.__class__.cross_sprite, (self.x-self.__class__.width/2,self.y-self.__class__.height))
        # screen.blit(textsurface,(self.x-self.__class__.width/8,self.y+self.__class__.height/2))
-        #print(self.x,self.y)
+
 
     def check_if_remove(self,player):
         pos_ombre_x =  player.x
         pos_ombre_y = ALTITUDE + player.y
         if sqrt((pos_ombre_x-self.x)**2 + (pos_ombre_y-self.y)**2)<=10 and self.exist == True and player.x_goal == self.x and player.y_goal == self.y - ALTITUDE:
             self.exist = False
-            print("cross removed")
+            
             if player.N_cages >0:
                 Cage(pos_ombre_x,pos_ombre_y)
                 player.N_cages -= 1
+            del self.__class__.instances[self.__class__.instances.index(self)]
+
             
            
 
@@ -65,15 +67,15 @@ class Cage:
     def draw_cage(self,screen):
         if self.empty == True:
             screen.blit(self.__class__.cage_sprite, (self.x-self.__class__.width/2,self.y-self.__class__.height))
-       # screen.blit(textsurface,(self.x-self.__class__.width/8,self.y+self.__class__.height/2))
-        #print(self.x,self.y)
+
 
     def check_if_remove(self,bunny):
         pos_bunny_x =  bunny.x
         pos_bunny_y = bunny.y
         if sqrt((pos_bunny_x-self.x)**2 + (pos_bunny_y-self.y+self.__class__.height/2)**2)<=50 and self.empty == True and self.falling == False and bunny.caged == False:
             self.empty = False
-            print("cage removed")
+            
+            del self.__class__.instances[self.__class__.instances.index(self)]
             bunny.caged = True
             bunny.x = self.x
             bunny.y = self.y-self.__class__.height/2

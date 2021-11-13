@@ -11,15 +11,17 @@ jump_sound = pygame.mixer.Sound("jump.wav")
 finish_sound = pygame.mixer.Sound("finish.wav")
 death_sound = pygame.mixer.Sound("death.wav")
 
-def random_dir():
-    bias = 0.1
+def random_dir(wave,x=None):
+    bias = wave/10
+    print(bias)
     k = (1-bias)**3
-    x = random.random()
+    if x == None:
+        x = random.random()
     if x < 0.5:
         x = 2*x
         return 2*pi*(x*k)/(x*k-x+1)
     else:
-        x = -2*x
+        x = 2-2*x
         return 2*pi*(x*k)/(x*k-x+1)
 class Bunny:
 
@@ -66,32 +68,13 @@ class Bunny:
             liste[liste.index(image)] = pygame.transform.scale(image, (width, height))
 
 
-    def __init__(self,parent1=None,parent2=None,desired_y = None,copied_bunny = None):
+    def __init__(self,wave,desired_y = None):
         self.__class__.instances.append(self)
         #traits :
-        if parent1 == None:
-            self.speed = 200
-            self.wander_dist_coef = 1
-            self.wander_proba = 0.10
-            
-        else:
-            #decendance
-            r1,r2,r3 = random.random(),random.random(),random.random()
-            self.speed = parent1.speed *r1 + parent2.speed *(1-r1)
-            self.wander_dist_coef = parent1.wander_dist_coef *r2 + parent2.wander_dist_coef *(1-r2)
-            self.wander_proba = parent1.wander_proba *r3 + parent2.wander_proba *(1-r3)
-            
-            #mutation
-            self.speed += self.speed * (2*random.random()-1) *TAUX_MUTATION_GLOBAL
-            self.wander_dist_coef += self.wander_dist_coef * (2*random.random()-1) *TAUX_MUTATION_GLOBAL
-            self.wander_proba += self.wander_proba * (2*random.random()-1) *TAUX_MUTATION_GLOBAL
-
-            if self.speed < 0:
-                self.speed = 1
-            if self.wander_dist_coef < 0 :
-                self.wander_dist_coef = 0.01
-            if self.wander_proba < 0:
-                self.wander_proba = 0.01
+        
+        self.speed = 200
+        self.wander_dist_coef = 1
+        self.wander_proba = 0.10
 
         self.x = 0
         if desired_y != None:
@@ -99,11 +82,6 @@ class Bunny:
         else:
             self.y = random.randint(50,550)
         
-        if copied_bunny != None:
-            self.speed = copied_bunny.speed
-            self.wander_dist_coef = copied_bunny.wander_dist_coef
-            self.wander_proba = copied_bunny.wander_proba
-
         self.new_x=self.x
         self.new_y =self.y
         self.wander_dist = 200*self.wander_dist_coef
@@ -116,10 +94,10 @@ class Bunny:
         self.jump_animation = False
         self.caged = False
         self.caged_timer = 0
-        
+        self.wave = wave
 
     def new_x_et_y(self):
-        self.new_angle = random_dir()
+        self.new_angle = random_dir(self.wave)
 
         self.new_dist = self.wander_dist*random.random()
         self.new_x = cos(self.new_angle)*self.new_dist+self.x
@@ -135,6 +113,8 @@ class Bunny:
         self.new_x_et_y()
         while self.new_x <= 0 or self.new_y >= 600 or self.new_y <= 110:
             self.new_x_et_y()
+
+        pygame.mixer.Sound.set_volume(jump_sound,0.2)
         pygame.mixer.Sound.play(jump_sound)
         self.is_wandering = True
 
@@ -146,7 +126,7 @@ class Bunny:
                     y_parcouru = sin(self.new_angle)*self.speed*dt
                     self.x = self.x +  x_parcouru
                     self.y = self.y + y_parcouru
-                    #print(sqrt((self.x-self.new_x)**2 + (self.y-self.new_y)**2))
+                    
                 else:
                     self.is_wandering = False
                     self.jump_animation = False
@@ -189,5 +169,7 @@ class Bunny:
         if self.caged_timer<5:
         # textsurface = font.render(txt_a_afficher, False, (0, 0, 0))
             screen.blit(self.image, (self.x-self.__class__.width/2,self.y-self.__class__.height/2))
+        else:
+            del self.__class__.instances[self.__class__.instances.index(self)]
         # screen.blit(textsurface,(self.x-self.__class__.width/8,self.y+self.__class__.height/2))
-        #print(self.x,self.y)
+        
