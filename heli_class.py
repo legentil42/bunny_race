@@ -8,11 +8,27 @@ from cross_and_cage_class import Cross
 pygame.init()
 go_sound = pygame.mixer.Sound("go.wav")
 wrong_sound = pygame.mixer.Sound("wrong.wav")
-SKEW = 5
+zap_sound = pygame.mixer.Sound("electric.wav")
+SKEW = 20
 ALTITUDE = 200
 RANDOM_COUNTER_MAX = 40000000
 HELI_SPEDD = 200
 NB_CAGES = 10
+
+
+
+def is_bunny_under_heli(bunny,player,time_elapsed):
+    ombre_x = player.x-player.__class__.width/2
+    ombre_y = ALTITUDE + player.y-player.__class__.height/2
+    bunny_x = bunny.x-bunny.__class__.width/2
+    bunny_y = bunny.y
+    
+    if bunny.color == 1 and sqrt((ombre_x-bunny_x)**2+(ombre_y-bunny_y)**2)<40 and bunny.caged == False and player.zapped == False and bunny.used_zap == False:
+        bunny.using_storm = True
+        player.zapped = True
+        bunny.used_zap = True
+        bunny.time_started_storm = time_elapsed
+        pygame.mixer.Sound.play(zap_sound)
 class Heli:
     width,height = 100,100
     instances = []
@@ -44,7 +60,7 @@ class Heli:
         self.y_goal =self.y
         self.current_sprite = 0
         self.current_dir = "gauche"
-        self.image = self.__class__.sprites_d[self.current_sprite]
+        self.image = self.__class__.sprites_g[self.current_sprite]
         self.rect = self.image.get_rect()
         self.rect.topleft = [self.x,self.y]
         self.drop = False
@@ -52,8 +68,10 @@ class Heli:
         self.moving = False
         self.already_deleted_cross = False
         self.random_counter = RANDOM_COUNTER_MAX
-
-
+        self.zapped = False
+        self.lastecart = 0
+        self.N_captured = 0
+        
     def waypoint(self):
         #("new waypoint") ajouter marqueur
 
@@ -73,7 +91,7 @@ class Heli:
     def update(self,dt,time_elapsed):
         if self.dead == False: 
 
-            if self.moving == True: # tout le temps sinon?
+            if self.moving == True and self.zapped == False: # tout le temps sinon?
 
                 if self.x_goal < self.x:
                     self.current_dir = "gauche"
@@ -84,10 +102,12 @@ class Heli:
 
                 if sqrt((self.x-self.x_goal)**2 + (self.y-self.y_goal)**2)>5:
                     if self.random_counter > 0:
-
-                        self.x_random = 0#SKEW * cos(self.angle+(pi/2)) * cos(time_elapsed/20) 
-                        self.y_random = 0#SKEW * sin(self.angle+(pi/2)) * cos(time_elapsed/20) 
+                        ecart = SKEW  * cos(5*time_elapsed)
                         
+                        self.x_random = (ecart-self.lastecart) * sin(self.angle) 
+                        self.y_random = (ecart-self.lastecart) * cos(self.angle) 
+                        self.lastecart = ecart
+
                         self.random_counter -= abs(self.x_random)+abs(self.y_random)
                     else :
                         self.x_random = 0
@@ -100,7 +120,8 @@ class Heli:
                     
                 else:
                     pass
-
+            else:
+                self.lastecart = SKEW  * cos(5*time_elapsed)
                 
             if self.current_dir == "droite":
                 self.current_sprite += self.__class__.hover_animation_speed

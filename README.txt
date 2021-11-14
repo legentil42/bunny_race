@@ -1,2 +1,4 @@
-Background music from PlayOnLoop.com
-Licensed under Creative Commons by Attribution 4.0
+Fast And Intense by Electronic Senses | https://soundcloud.com/electronicsenses
+Music promoted by https://www.free-stock-music.com
+Creative Commons Attribution-ShareAlike 3.0 Unported
+https://creativecommons.org/licenses/by-sa/3.0/deed.en_US

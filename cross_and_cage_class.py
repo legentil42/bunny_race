@@ -7,6 +7,7 @@ from pygame.locals import *
 pygame.init()
 go_sound = pygame.mixer.Sound("go.wav")
 ALTITUDE = 200
+SKEW = 20
 class Cross:
     #VERIFIER QUE LA CROSS EST VALIDE ET SI OUI:
     instances = []
@@ -30,7 +31,7 @@ class Cross:
        # screen.blit(textsurface,(self.x-self.__class__.width/8,self.y+self.__class__.height/2))
 
 
-    def check_if_remove(self,player):
+    def check_if_remove(self,player,time_elapsed):
         pos_ombre_x =  player.x
         pos_ombre_y = ALTITUDE + player.y
         if sqrt((pos_ombre_x-self.x)**2 + (pos_ombre_y-self.y)**2)<=10 and self.exist == True and player.x_goal == self.x and player.y_goal == self.y - ALTITUDE:
@@ -39,6 +40,7 @@ class Cross:
             if player.N_cages >0:
                 Cage(pos_ombre_x,pos_ombre_y)
                 player.N_cages -= 1
+                player.lastecart = SKEW  * cos(5*time_elapsed)
             del self.__class__.instances[self.__class__.instances.index(self)]
 
             
@@ -69,7 +71,7 @@ class Cage:
             screen.blit(self.__class__.cage_sprite, (self.x-self.__class__.width/2,self.y-self.__class__.height))
 
 
-    def check_if_remove(self,bunny):
+    def check_if_remove(self,bunny,player):
         pos_bunny_x =  bunny.x
         pos_bunny_y = bunny.y
         if sqrt((pos_bunny_x-self.x)**2 + (pos_bunny_y-self.y+self.__class__.height/2)**2)<=50 and self.empty == True and self.falling == False and bunny.caged == False:
@@ -79,6 +81,7 @@ class Cage:
             bunny.caged = True
             bunny.x = self.x
             bunny.y = self.y-self.__class__.height/2
+            player.N_captured += 1
 
     def update_pos(self):
         if self.y >=self.goal_y:
@@ -108,3 +111,34 @@ class River:
         if self.x>0:
             self.x = -1700+800
         screen.blit(self.__class__.river_sprite, (self.x,self.y))
+
+
+class HP_bar:
+    #VERIFIER QUE LA CROSS EST VALIDE ET SI OUI:
+    instances = []
+    
+    width,height = 80,40
+    states_sprites = []
+
+    states_sprites.append(pygame.image.load('sprites/HP_green.png'))
+    states_sprites.append(pygame.image.load('sprites/HP_yellow.png'))
+    states_sprites.append(pygame.image.load('sprites/HP_red.png'))
+    states_sprites.append(pygame.image.load('sprites/HP_black.png'))
+
+
+    for liste in [states_sprites]:
+        for image in liste:
+            liste[liste.index(image)] = pygame.transform.scale(image, (width, height))
+    
+    def __init__(self):
+        if True:
+
+            self.x = 110
+            self.y = 0
+            self.HP = 0
+            self.sprite = self.__class__.states_sprites[self.HP]
+            self.__class__.instances.append(self)
+
+    def draw_health(self,screen):
+        self.sprite = self.__class__.states_sprites[self.HP]
+        screen.blit(self.sprite, (self.x,self.y))
