@@ -4,11 +4,25 @@ import random
 from math import *
 import sys
 from pygame.locals import *
+import sys
+import os
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
+
 from cross_and_cage_class import Cross
 pygame.init()
-go_sound = pygame.mixer.Sound("go.wav")
-wrong_sound = pygame.mixer.Sound("wrong.wav")
-zap_sound = pygame.mixer.Sound("electric.wav")
+go_sound = pygame.mixer.Sound(resource_path("sounds/go.wav"))
+wrong_sound = pygame.mixer.Sound(resource_path("sounds/wrong.wav"))
+zap_sound = pygame.mixer.Sound(resource_path("sounds/electric.wav"))
 SKEW = 20
 ALTITUDE = 200
 RANDOM_COUNTER_MAX = 40000000
@@ -34,13 +48,13 @@ class Heli:
     instances = []
     sprites_g = []
     hover_animation_speed = 0.5
-    sprites_g.append(pygame.image.load('sprites/heli/H1g.png'))
-    sprites_g.append(pygame.image.load('sprites/heli/H2g.png'))
+    sprites_g.append(pygame.image.load(resource_path('sprites/heli/H1g.png')))
+    sprites_g.append(pygame.image.load(resource_path('sprites/heli/H2g.png')))
     sprites_d = []
-    sprites_d.append(pygame.image.load('sprites/heli/H1d.png'))
-    sprites_d.append(pygame.image.load('sprites/heli/H2d.png'))
+    sprites_d.append(pygame.image.load(resource_path('sprites/heli/H1d.png')))
+    sprites_d.append(pygame.image.load(resource_path('sprites/heli/H2d.png')))
 
-    ombre = pygame.image.load('sprites/heli/ombre.png')
+    ombre = pygame.image.load(resource_path('sprites/heli/ombre.png'))
     ombre = pygame.transform.scale(ombre, (width, height/3))
     for liste in [sprites_d,sprites_g]:
         for image in liste:
@@ -71,7 +85,7 @@ class Heli:
         self.zapped = False
         self.lastecart = 0
         self.N_captured = 0
-        
+
     def waypoint(self):
         #("new waypoint") ajouter marqueur
 

@@ -15,7 +15,21 @@ from bunny_class import *
 from heli_class import *
 from cross_and_cage_class import Cage,River,HP_bar
 import numpy as np
-import matplotlib.pyplot as plt
+
+import sys
+import os
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return relative_path#os.path.join(base_path, relative_path)
+
+
+
 WAVES = [[5,0.1,1],
             [5,0.2,1],
             [5,0.4,2],
@@ -69,8 +83,8 @@ def main_loop():
     # for instance in Cross.instances:
     #     del instance
     BLUE = [0,0,255]
-    heli_sound = pygame.mixer.Sound("helisound.wav")
-    bg_music = pygame.mixer.Sound("music.mp3")
+    heli_sound = pygame.mixer.Sound(resource_path("sounds/helisound.wav"))
+    bg_music = pygame.mixer.Sound(resource_path("sounds/music.mp3"))
     pygame.mixer.Sound.set_volume(bg_music,0.2)
     pygame.mixer.Sound.set_volume(heli_sound,0.4)
     pygame.mixer.Sound.play(bg_music,-1)
@@ -99,11 +113,11 @@ def main_loop():
     fpsClock = pygame.time.Clock()
     width, height = 800, 600
     screen = pygame.display.set_mode((width, height))
-    img_fond = pygame.image.load('sprites/river/fond_complet.png')
-    img_HUD = pygame.image.load('sprites/hud.png')
-    img_HUD_2 = pygame.image.load('sprites/hud_2.png')
-    img_game_over = pygame.image.load('sprites/game_over.png')
-    img_game_won = pygame.image.load('sprites/game_won.png')
+    img_fond = pygame.image.load(resource_path('sprites/river/fond_complet.png'))
+    img_HUD = pygame.image.load(resource_path('sprites/hud.png'))
+    img_HUD_2 = pygame.image.load(resource_path('sprites/hud_2.png'))
+    img_game_over = pygame.image.load(resource_path('sprites/game_over.png'))
+    img_game_won = pygame.image.load(resource_path('sprites/game_won.png'))
 
     pygame.font.init()
     font = pygame.font.SysFont('Arial', 30)
@@ -290,9 +304,6 @@ def main_loop():
 
 main_loop()
 
-# %%
-L_x = np.linspace(0,1,1000)
-L_y = [random_dir(1,x) for x in L_x]
-plt.plot(L_x,L_y)
-plt.show()
+
+
 # %%

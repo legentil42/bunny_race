@@ -1,18 +1,29 @@
 import pygame
 import random
-import cv2
 from math import *
 import sys
 from pygame.locals import *
+import sys
+import os
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
 
 from cross_and_cage_class import ALTITUDE
 TAUX_MUTATION_GLOBAL = 0.2 #pourcentage
 NB_LAPIN = 10
 TAUX_VAINQUEURS = 0.5
 pygame.init()
-jump_sound = pygame.mixer.Sound("jump.wav")
-finish_sound = pygame.mixer.Sound("finish.wav")
-death_sound = pygame.mixer.Sound("death.wav")
+jump_sound = pygame.mixer.Sound(resource_path("sounds/jump.wav"))
+finish_sound = pygame.mixer.Sound(resource_path("sounds/finish.wav"))
+death_sound = pygame.mixer.Sound(resource_path("sounds/death.wav"))
 
 def random_dir(bias,x=None):
 
@@ -36,24 +47,24 @@ class Bunny:
     sprites_g = []
     jump_animation_speed = 0.5
     sprites_white_g = []
-    sprites_white_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_0.png'))
-    sprites_white_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_1.png'))
-    sprites_white_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_2.png'))
-    sprites_white_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_3.png'))
-    sprites_white_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_4.png'))
-    sprites_white_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_5.png'))
-    sprites_white_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_6.png'))
-    sprites_white_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_7.png'))
+    sprites_white_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_0.png')))
+    sprites_white_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_1.png')))
+    sprites_white_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_2.png')))
+    sprites_white_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_3.png')))
+    sprites_white_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_4.png')))
+    sprites_white_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_5.png')))
+    sprites_white_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_6.png')))
+    sprites_white_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_7.png')))
 
     sprites_blue_g = []
-    sprites_blue_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_0.png'))
-    sprites_blue_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_1.png'))
-    sprites_blue_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_2.png'))
-    sprites_blue_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_3.png'))
-    sprites_blue_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_4.png'))
-    sprites_blue_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_5.png'))
-    sprites_blue_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_6.png'))
-    sprites_blue_g.append(pygame.image.load('sprites/bunny/bunny_g/frame_7.png'))
+    sprites_blue_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_0.png')))
+    sprites_blue_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_1.png')))
+    sprites_blue_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_2.png')))
+    sprites_blue_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_3.png')))
+    sprites_blue_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_4.png')))
+    sprites_blue_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_5.png')))
+    sprites_blue_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_6.png')))
+    sprites_blue_g.append(pygame.image.load(resource_path('sprites/bunny/bunny_g/frame_7.png')))
 
 
     for sprite in sprites_blue_g:
@@ -65,31 +76,31 @@ class Bunny:
 
     sprites_d = []
     sprites_white_d = []
-    sprites_white_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_0.png'))
-    sprites_white_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_1.png'))
-    sprites_white_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_2.png'))
-    sprites_white_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_3.png'))
-    sprites_white_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_4.png'))
-    sprites_white_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_5.png'))
-    sprites_white_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_6.png'))
-    sprites_white_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_7.png'))
+    sprites_white_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_0.png')))
+    sprites_white_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_1.png')))
+    sprites_white_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_2.png')))
+    sprites_white_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_3.png')))
+    sprites_white_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_4.png')))
+    sprites_white_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_5.png')))
+    sprites_white_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_6.png')))
+    sprites_white_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_7.png')))
     
     sprites_blue_d = []
-    sprites_blue_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_0.png'))
-    sprites_blue_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_1.png'))
-    sprites_blue_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_2.png'))
-    sprites_blue_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_3.png'))
-    sprites_blue_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_4.png'))
-    sprites_blue_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_5.png'))
-    sprites_blue_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_6.png'))
-    sprites_blue_d.append(pygame.image.load('sprites/bunny/bunny_d/frame_7.png'))
+    sprites_blue_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_0.png')))
+    sprites_blue_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_1.png')))
+    sprites_blue_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_2.png')))
+    sprites_blue_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_3.png')))
+    sprites_blue_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_4.png')))
+    sprites_blue_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_5.png')))
+    sprites_blue_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_6.png')))
+    sprites_blue_d.append(pygame.image.load(resource_path('sprites/bunny/bunny_d/frame_7.png')))
 
 
     sprites_d.append(sprites_white_d)
     eclair_width = 15
     L_zap_sprites = []
-    L_zap_sprites.append(pygame.image.load('sprites/bunny/eclair_1.png'))
-    L_zap_sprites.append(pygame.image.load('sprites/bunny/eclair_2.png'))
+    L_zap_sprites.append(pygame.image.load(resource_path('sprites/bunny/eclair_1.png')))
+    L_zap_sprites.append(pygame.image.load(resource_path('sprites/bunny/eclair_2.png')))
 
 
     
@@ -104,12 +115,12 @@ class Bunny:
 
 
     sprites_caged = [[],[]]
-    sprites_caged[0].append(pygame.image.load('sprites/bunny/caged_1.png'))
-    sprites_caged[0].append(pygame.image.load('sprites/bunny/caged_2.png'))
+    sprites_caged[0].append(pygame.image.load(resource_path('sprites/bunny/caged_1.png')))
+    sprites_caged[0].append(pygame.image.load(resource_path('sprites/bunny/caged_2.png')))
 
 
-    sprites_caged[1].append(pygame.image.load('sprites/bunny/caged_1_blue.png'))
-    sprites_caged[1].append(pygame.image.load('sprites/bunny/caged_2_blue.png'))
+    sprites_caged[1].append(pygame.image.load(resource_path('sprites/bunny/caged_1_blue.png')))
+    sprites_caged[1].append(pygame.image.load(resource_path('sprites/bunny/caged_2_blue.png')))
 
     for liste in [sprites_d[0],sprites_g[0],sprites_d[1],sprites_g[1],sprites_caged[0],sprites_caged[1]]:
         for image in liste:

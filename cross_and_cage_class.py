@@ -4,8 +4,21 @@ import random
 from math import *
 import sys
 from pygame.locals import *
+import sys
+import os
+
+def resource_path(relative_path):
+    try:
+    # PyInstaller creates a temp folder and stores path in _MEIPASS
+        base_path = sys._MEIPASS
+    except Exception:
+        base_path = os.path.abspath(".")
+
+    return os.path.join(base_path, relative_path)
+
+
 pygame.init()
-go_sound = pygame.mixer.Sound("go.wav")
+go_sound = pygame.mixer.Sound(resource_path("sounds/go.wav"))
 ALTITUDE = 200
 SKEW = 20
 class Cross:
@@ -13,7 +26,7 @@ class Cross:
     instances = []
     
     width,height = 80,40
-    cross_sprite = pygame.image.load('sprites/heli/cross.png')
+    cross_sprite = pygame.image.load(resource_path('sprites/heli/cross.png'))
     cross_sprite = pygame.transform.scale(cross_sprite, (width, height))
     
     def __init__(self,x,y):
@@ -53,7 +66,7 @@ class Cage:
     instances = []
     
     width,height = 100,100
-    cage_sprite = pygame.image.load('sprites/heli/cage.png')
+    cage_sprite = pygame.image.load(resource_path('sprites/heli/cage.png'))
     cage_sprite = pygame.transform.scale(cage_sprite, (width, height))
     
     def __init__(self,x,y):
@@ -95,7 +108,7 @@ class River:
     instances = []
     
     width,height = 1700,100
-    river_sprite = pygame.image.load('sprites/river/eau _qui_coule.png')
+    river_sprite = pygame.image.load(resource_path('sprites/river/eau _qui_coule.png'))
     river_sprite = pygame.transform.scale(river_sprite, (width, height))
     
     def __init__(self):
@@ -120,10 +133,10 @@ class HP_bar:
     width,height = 80,40
     states_sprites = []
 
-    states_sprites.append(pygame.image.load('sprites/HP_green.png'))
-    states_sprites.append(pygame.image.load('sprites/HP_yellow.png'))
-    states_sprites.append(pygame.image.load('sprites/HP_red.png'))
-    states_sprites.append(pygame.image.load('sprites/HP_black.png'))
+    states_sprites.append(pygame.image.load(resource_path('sprites/HP_green.png')))
+    states_sprites.append(pygame.image.load(resource_path('sprites/HP_yellow.png')))
+    states_sprites.append(pygame.image.load(resource_path('sprites/HP_red.png')))
+    states_sprites.append(pygame.image.load(resource_path('sprites/HP_black.png')))
 
 
     for liste in [states_sprites]:
