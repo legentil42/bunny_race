@@ -20,7 +20,7 @@ def resource_path(relative_path):
 pygame.init()
 go_sound = pygame.mixer.Sound(resource_path("sounds/go.wav"))
 ALTITUDE = 200
-SKEW = 20
+SKEW = 30
 class Cross:
     #VERIFIER QUE LA CROSS EST VALIDE ET SI OUI:
     instances = []

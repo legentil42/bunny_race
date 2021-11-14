@@ -23,11 +23,9 @@ TAUX_VAINQUEURS = 0.5
 pygame.init()
 jump_sound = pygame.mixer.Sound(resource_path("sounds/jump.wav"))
 finish_sound = pygame.mixer.Sound(resource_path("sounds/finish.wav"))
-death_sound = pygame.mixer.Sound(resource_path("sounds/death.wav"))
 
 def random_dir(bias,x=None):
 
-    print(bias)
     k = (1-bias)**3
     if x == None:
         x = random.random()
@@ -180,7 +178,7 @@ class Bunny:
         while self.new_x <= 0 or self.new_y >= 600 or self.new_y <= 110:
             self.new_x_et_y()
 
-        pygame.mixer.Sound.set_volume(jump_sound,0.2)
+        pygame.mixer.Sound.set_volume(jump_sound,0.05)
         pygame.mixer.Sound.play(jump_sound)
         self.is_wandering = True
 

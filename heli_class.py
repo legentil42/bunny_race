@@ -23,7 +23,10 @@ pygame.init()
 go_sound = pygame.mixer.Sound(resource_path("sounds/go.wav"))
 wrong_sound = pygame.mixer.Sound(resource_path("sounds/wrong.wav"))
 zap_sound = pygame.mixer.Sound(resource_path("sounds/electric.wav"))
-SKEW = 20
+pygame.mixer.Sound.set_volume(go_sound,0.15)
+pygame.mixer.Sound.set_volume(wrong_sound,0.4)
+pygame.mixer.Sound.set_volume(zap_sound,0.4)
+SKEW = 30
 ALTITUDE = 200
 RANDOM_COUNTER_MAX = 40000000
 HELI_SPEDD = 200

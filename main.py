@@ -51,7 +51,6 @@ def generate_x_bunnies(bunny_wave):
     nb_bun = WAVES[bunny_wave][0]
     bias = WAVES[bunny_wave][1]
     nb_bleu = WAVES[bunny_wave][2]
-    print(nb_bun,bias,nb_bleu)
     L_des_Y = list(np.linspace(110,550,nb_bun))
     random.shuffle(L_des_Y)
     for i in range(nb_bun):
@@ -84,9 +83,13 @@ def main_loop():
     #     del instance
     BLUE = [0,0,255]
     heli_sound = pygame.mixer.Sound(resource_path("sounds/helisound.wav"))
-    bg_music = pygame.mixer.Sound(resource_path("sounds/music.mp3"))
-    pygame.mixer.Sound.set_volume(bg_music,0.2)
-    pygame.mixer.Sound.set_volume(heli_sound,0.4)
+    bg_music = pygame.mixer.Sound(resource_path("sounds/music.mp3")) 
+    victory_sound = pygame.mixer.Sound(resource_path("sounds/victory.mp3"))
+    death_sound = pygame.mixer.Sound(resource_path("sounds/death.wav"))
+    pygame.mixer.Sound.set_volume(bg_music,0.05)
+    pygame.mixer.Sound.set_volume(heli_sound,0.05)
+    pygame.mixer.Sound.set_volume(victory_sound,0.3)
+    pygame.mixer.Sound.set_volume(death_sound,0.3)
     pygame.mixer.Sound.play(bg_music,-1)
     last_check_respawn = 0
     Cross.instances = []
@@ -147,8 +150,8 @@ def main_loop():
             screen.blit(img_fond, (x_screen,0))
 
             if game_starting == False:
-                player.x = 577
-                player.y = 468
+                player.x = 585
+                player.y = 450
                 player.draw_heli(screen,font)
 
             if game_starting == True:
@@ -192,6 +195,7 @@ def main_loop():
             # Update.
             if hp_bar.HP >=3 and sim_finished == False:
                 sim_finished = True
+                
                 for bunny in Bunny.instances:
                     bunny.current_sprite = 0
                     bunny.dead = True
@@ -297,6 +301,7 @@ def main_loop():
                         free_bunny = True
                 if free_bunny == False:
                     game_won = True
+                    pygame.mixer.Sound.play(victory_sound) 
                     sim_finished = True
 
     pygame.quit()   
