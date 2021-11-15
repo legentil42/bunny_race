@@ -30,16 +30,16 @@ def resource_path(relative_path):
 
 
 
-WAVES = [[5,0.1,1],
+WAVES =     [[5,0.1,1],
             [5,0.2,1],
-            [5,0.4,2],
-            [6,0.4,2],
+            [5,0.3,2],
+            [6,0.3,2],
             [7,0.4,4],
-            [8,0.6,4],
-            [9,0.6,4],
-            [10,0.6,5],
-            [15,0.7,5],
-            [15,0.9,8]] #nb bunny, biais, dont electriques
+            [8,0.4,4],
+            [9,0.4,4],
+            [10,0.5,5],     #8
+            [10,0.5,5],
+            [15,0.6,8]] #nb bunny, biais, dont electriques
 
 def adapted_y_to_print(item):
     if item.__class__ == Bunny:
@@ -48,10 +48,10 @@ def adapted_y_to_print(item):
         return item.y
 
 def generate_x_bunnies(bunny_wave):
-    nb_bun = WAVES[bunny_wave][0]
-    bias = WAVES[bunny_wave][1]
-    nb_bleu = WAVES[bunny_wave][2]
-    L_des_Y = list(np.linspace(110,550,nb_bun))
+    nb_bun = WAVES[bunny_wave-1][0]
+    bias = WAVES[bunny_wave-1][1]
+    nb_bleu = WAVES[bunny_wave-1][2]
+    L_des_Y = list(np.linspace(110,590,nb_bun))
     random.shuffle(L_des_Y)
     for i in range(nb_bun):
         if i < nb_bleu:
@@ -116,7 +116,7 @@ def main_loop():
     fpsClock = pygame.time.Clock()
     width, height = 800, 600
     screen = pygame.display.set_mode((width, height))
-    img_fond = pygame.image.load(resource_path('sprites/river/fond_complet.png'))
+    img_fond = pygame.image.load('sprites/fond_complet.png')
     img_HUD = pygame.image.load(resource_path('sprites/hud.png'))
     img_HUD_2 = pygame.image.load(resource_path('sprites/hud_2.png'))
     img_game_over = pygame.image.load(resource_path('sprites/game_over.png'))
@@ -127,7 +127,7 @@ def main_loop():
     game_started = False
     game_starting = False
     x_screen = -800
-    bunny_wave = 1
+    bunny_wave = 0
     # Game loop
     while restart_game == False: #len(bunnies_order)<NB_LAPIN
         if game_started == False:
@@ -291,7 +291,11 @@ def main_loop():
             if time_elapsed-last_check_respawn > 10 and  sim_finished == False and bunny_wave<=9:
                 bunny_wave += 1
                 generate_x_bunnies(bunny_wave)
-                player.N_cages += WAVES[bunny_wave][0]+1
+                player.N_cages += WAVES[bunny_wave-1][0]+1
+
+                if (bunny_wave > 6):
+                    player.N_cages += 2
+
                 last_check_respawn = time_elapsed
                 
             if bunny_wave == 10 and sim_finished == False:
@@ -307,7 +311,9 @@ def main_loop():
     pygame.quit()   
     main_loop()
 
+
 main_loop()
+
 
 
 
