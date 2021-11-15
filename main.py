@@ -48,9 +48,9 @@ def adapted_y_to_print(item):
         return item.y
 
 def generate_x_bunnies(bunny_wave):
-    nb_bun = WAVES[bunny_wave-1][0]
-    bias = WAVES[bunny_wave-1][1]
-    nb_bleu = WAVES[bunny_wave-1][2]
+    nb_bun = WAVES[bunny_wave][0]
+    bias = WAVES[bunny_wave][1]
+    nb_bleu = WAVES[bunny_wave][2]
     L_des_Y = list(np.linspace(110,590,nb_bun))
     random.shuffle(L_des_Y)
     for i in range(nb_bun):
@@ -127,7 +127,7 @@ def main_loop():
     game_started = False
     game_starting = False
     x_screen = -800
-    bunny_wave = 0
+    bunny_wave = 1
     # Game loop
     while restart_game == False: #len(bunnies_order)<NB_LAPIN
         if game_started == False:
@@ -288,7 +288,7 @@ def main_loop():
             dt = fpsClock.tick(fps)/1000
             time_elapsed += dt
 
-            if time_elapsed-last_check_respawn > 10 and  sim_finished == False and bunny_wave<=9:
+            if time_elapsed-last_check_respawn > 10 and  sim_finished == False and bunny_wave<9:
                 bunny_wave += 1
                 generate_x_bunnies(bunny_wave)
                 player.N_cages += WAVES[bunny_wave-1][0]+1
@@ -298,7 +298,7 @@ def main_loop():
 
                 last_check_respawn = time_elapsed
                 
-            if bunny_wave == 10 and sim_finished == False:
+            if bunny_wave == 9 and sim_finished == False:
                 free_bunny = False
                 for bunny in Bunny.instances:
                     if bunny.caged == False:
